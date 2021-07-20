@@ -1,0 +1,19 @@
+<ion-header no-border>
+  <ion-toolbar color="dark">
+    <ion-title>
+      Favoritos
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="dark">
+
+<ion-slides *ngIf="localStorage.noticias.length === 0">
+  <ion-slide>
+    <h1>No hay registros</h1>
+  </ion-slide>
+</ion-slides>
+
+  <app-noticias *ngIf="localStorage.noticias.length > 0" [noticias]="localStorage.noticias"></app-noticias>
+
+</ion-content>
