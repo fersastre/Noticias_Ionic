@@ -15,34 +15,59 @@ export class NoticiaComponent implements OnInit {
 
   @Input() noticia: Article;
   @Input() numero;
+  @Input() enFavoritos;
 
   constructor(private iab: InAppBrowser,
     private actionSheetController: ActionSheetController,
     private socialSharing: SocialSharing,
-    private localStorage: DataLocalService) { }
+    private localStorage: DataLocalService,
+   ) { }
 
-  ngOnInit() {}
-
- 
+  ngOnInit() { console.log(this.enFavoritos); }
 
 
-  abrirNoticia(){
+
+
+  abrirNoticia() {
     const browser = this.iab.create(this.noticia.url, '_system');
     console.log(this.noticia.url);
   }
 
-  async lanzarMenu(){
-    const actionSheet = await this.actionSheetController.create({
-      buttons: [ {
+  async lanzarMenu() {
+
+    let guardarBorrarBtn;
+
+
+    if (this.enFavoritos) {
+      guardarBorrarBtn = {
+        text: 'Borrar de favoritos',
+        cssClass: 'action-dark',
+        icon: 'trash',
+        handler: () => {
+          this.localStorage.borrarNoticia(this.noticia);
+          console.log('borrar de favorite');
+          
+
+        }
+      };
+    }
+    else {
+      guardarBorrarBtn = {
         text: 'Favorito',
         cssClass: 'action-dark',
         icon: 'star',
         handler: () => {
-          this.localStorage.guardarNoticia( this.noticia);
+          this.localStorage.guardarNoticia(this.noticia);
           console.log('Share favorite');
-       
+    
+
         }
-      }, {
+      };
+    }
+    const actionSheet = await this.actionSheetController.create({
+      buttons: [
+        guardarBorrarBtn,
+        {
         text: 'Compartir',
         cssClass: 'action-dark',
         icon: 'share',
@@ -71,6 +96,7 @@ export class NoticiaComponent implements OnInit {
     console.log('onDidDismiss resolved with role', role);
   }
 
+  
 
 
 }
