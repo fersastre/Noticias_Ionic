@@ -21,23 +21,24 @@ export class Tab1Page implements OnInit{
     this.cargasNoticias(event);
   }
 
-
+//Se modifico el metodo porque no le puedo pegar a la api de pruebas en produccion.. 
   cargasNoticias(event?){
-    this.noticiasService.getTopHeadLines()
-    .subscribe( resp =>{
-      console.log(resp);
-      if(resp.articles.length === 0){
-        event.target.disabled = true;
-        event.target.complete();
-        return;
-      }
-      this.noticias.push( ...resp.articles);// De esta manera insertamos las noticias articulo por articulo spread ...
+    this.noticias = this.noticiasService.getNoticiasHarcodeo()
+    // this.noticiasService.getTopHeadLines()
+    // .subscribe( resp =>{
+    //   console.log(resp);
+    //   if(resp.articles.length === 0){
+    //     event.target.disabled = true;
+    //     event.target.complete();
+    //     return;
+    //   }
+    //  this.noticias.push( ...resp.articles);// De esta manera insertamos las noticias articulo por articulo spread ...
       if(event){
         event.target.complete();
       }
     
     
-    })
+    //})
 
 }
 
