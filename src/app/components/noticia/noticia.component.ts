@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Article } from 'src/app/interfaces/interfaces';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { ActionSheetController } from '@ionic/angular';
+import { ActionSheetController, Platform } from '@ionic/angular';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { DataLocalService } from 'src/app/services/data-local.service';
+
 
 @Component({
   selector: 'app-noticia',
@@ -21,6 +22,7 @@ export class NoticiaComponent implements OnInit {
     private actionSheetController: ActionSheetController,
     private socialSharing: SocialSharing,
     private localStorage: DataLocalService,
+    private platform: Platform
    ) { }
 
   ngOnInit() { console.log(this.enFavoritos); }
@@ -72,12 +74,7 @@ export class NoticiaComponent implements OnInit {
         cssClass: 'action-dark',
         icon: 'share',
         handler: () => {
-          this.socialSharing.share(
-            this.noticia.title,
-            this.noticia.source.name,
-            '',
-            this.noticia.url
-          );
+         this.compartirNoticia();
           console.log('Play compartir');
         }
       }, {
@@ -96,7 +93,32 @@ export class NoticiaComponent implements OnInit {
     console.log('onDidDismiss resolved with role', role);
   }
 
-  
+  compartirNoticia(){
+    if(this.platform.is('cordova')){
+        this.socialSharing.share(
+          this.noticia.title,
+          this.noticia.source.name,
+          '',
+          this.noticia.url
+        );
+
+    } else{
+      if (navigator['share']) {
+        navigator['share']({
+          title: this.noticia.title,
+          text: this.noticia.description,
+          url: this.noticia.url,
+        })
+          .then(() => console.log('Successful share'))
+          .catch((error) => console.log('Error sharing', error));
+      }
+
+    }
+
+
+
+
+  }
 
 
 }
